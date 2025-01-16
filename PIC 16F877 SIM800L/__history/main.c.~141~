@@ -1,0 +1,126 @@
+#include <main.h>
+#define tb4    PIN_B2
+#define tb3    PIN_B3
+#define tb2    PIN_B4
+#define tb1    PIN_B5
+
+#define stt1    PIN_D2
+#define stt2    PIN_D3
+#define stt3    PIN_C4
+#define stt4    PIN_C5
+
+
+//!#define tb1    PIN_A0
+//!#define tb2    PIN_A1
+//!#define tb3    PIN_A2
+//!#define tb4   PIN_A3
+//!
+//!#define tb5    PIN_B5
+//!#define tb6    PIN_B4
+//!#define tb7    PIN_B3
+//!#define tb8    PIN_B2
+
+
+
+
+unsigned char x=11;
+char sdt[20]="0378559170"; //0378559170
+
+unsigned char dataSMS[80],index=0;
+/***************************************************************/
+#int_RDA
+void  RDA_isr(void)//Ngat du lieu khi truyen nhan
+{
+     unsigned char c; 
+     c=getc();//Gan ki tu vua nhan duoc vao bien tam 
+     dataSMS[index] =  c; // dua du lieu vao bo dem
+     index++;
+     if(index>=80)index=1;
+}
+/***************************************************************/
+
+
+void xoabodem()
+{
+    char i;
+    for(i=0;i<80;i++)dataSMS[i]=0; 
+    index=0;
+}
+
+
+
+void doctinnhan()  //printf("AT+CMGDA=\"DEL ALL\"\r\n");
+{
+  if(index >1) // neu trong bo dem co du lieu  //sim >1
+        {       
+         delay_ms(1000); // cho du lieu gui xong
+         
+         if(strstr(dataSMS,(unsigned char *)"Bat1") != 0)
+         {
+          output_low(tb1); 
+          
+          delay_ms(2000);   
+         }
+         
+         
+         else if(strstr(dataSMS,(unsigned char *)"Tat1") != 0)   // TAT TB 1
+        {
+          output_high(tb1);
+         
+         delay_ms(2000);
+         
+        }
+    
+       
+         else if(strstr(dataSMS,(unsigned char *)"DOI3") != 0)
+         {
+         
+        
+         }
+        else if(strstr(dataSMS,(unsigned char *)"DOI4") != 0)
+        {
+         
+         
+        }
+
+    
+    
+    xoabodem();//xoa bo dem
+    
+  }
+}
+
+void SIM_INIT()
+{
+  delay_ms(1000);
+  printf("AT\r\n");delay_ms(500);
+  printf("ATE0\r\n");delay_ms(500);
+  printf("AT+CMGF=1\r\n");delay_ms(500);
+  printf("AT+CNMI=2,2,0,0,0\r\n");delay_ms(500); // GUI ND SMS RA 
+  printf("AT&W\r\n");delay_ms(500);
+  printf("AT+CMGDA=\"DEL ALL\"\r\n");delay_ms(500);
+}
+void main()
+{  delay_ms(2000);
+
+
+   output_high(tb1);
+   output_high(tb2);
+   output_high(tb3);
+   output_high(tb4);
+   
+   
+   SIM_INIT();
+   
+   ENABLE_INTERRUPTS(INT_RDA); //cho phep ngat uart
+   ENABLE_INTERRUPTS(GLOBAL); //cho phep tat ca cac loai ngat hoat dong   ;
+  
+   xoabodem();//xoa bo dem
+   while(TRUE)
+   {
+      doctinnhan();     
+             
+   }
+
+}
+

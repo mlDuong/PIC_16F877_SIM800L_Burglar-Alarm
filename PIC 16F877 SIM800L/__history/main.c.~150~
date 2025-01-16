@@ -1,0 +1,254 @@
+#include <main.h>
+
+#define tb1    PIN_A0
+#define tb2    PIN_A1
+#define tb3    PIN_A2
+#define tb4   PIN_A3
+
+#define tb5    PIN_B5
+#define tb6    PIN_B4
+#define tb7    PIN_B3
+#define tb8    PIN_B2
+
+#define led    PIN_D4
+
+
+
+unsigned char x=11;
+char sdt[20]="0326419911"; //
+
+unsigned char dataSMS[80],index=0;
+/***************************************************************/
+#int_RDA
+void  RDA_isr(void)//Ngat du lieu khi truyen nhan
+{
+     unsigned char c; 
+     c=getc();//Gan ki tu vua nhan duoc vao bien tam 
+     dataSMS[index] =  c; // dua du lieu vao bo dem
+     index++;
+     if(index>=80)index=1;
+}
+/***************************************************************/
+
+
+void xoabodem()
+{
+    char i;
+    for(i=0;i<80;i++)dataSMS[i]=0; 
+    index=0;
+}
+
+
+
+void doctinnhan()  //printf("AT+CMGDA=\"DEL ALL\"\r\n");
+{
+  if(index >1) // neu trong bo dem co du lieu  //sim >1
+        {       
+         delay_ms(1000); // cho du lieu gui xong
+         
+         if(strstr(dataSMS,(unsigned char *)"Bat1") != 0)
+         {
+          output_low(tb1);delay_ms(2000);  
+                    
+         }
+         
+                
+         else if(strstr(dataSMS,(unsigned char *)"Tat1") != 0)   // TAT TB 1
+        {
+          output_high(tb1); delay_ms(2000);
+                
+        }
+    
+       
+        
+         else if(strstr(dataSMS,(unsigned char *)"Bat2") != 0)
+         {         
+         output_low(tb2); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat2") != 0)
+         {
+         output_high(tb2); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat3") != 0)
+         {         
+         output_low(tb3); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat3") != 0)
+         {
+         output_high(tb3); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat4") != 0)
+         {         
+         output_low(tb4); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat4") != 0)
+         {
+         output_high(tb4); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat5") != 0)
+         {         
+         output_low(tb5); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat5") != 0)
+         {
+         output_high(tb5); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat6") != 0)
+         {         
+         output_low(tb6); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat6") != 0)
+         {
+         output_high(tb6); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat7") != 0)
+         {         
+         output_low(tb7); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat7") != 0)
+         {
+         output_high(tb7); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"Bat8") != 0)
+         {         
+         output_low(tb8); delay_ms(2000);                    
+         }
+         else if(strstr(dataSMS,(unsigned char *)"Tat8") != 0)
+         {
+         output_high(tb8); delay_ms(2000);      
+         }
+         
+         else if(strstr(dataSMS,(unsigned char *)"ON") != 0)
+         {         
+         output_low(tb1);
+         output_low(tb2);
+         output_low(tb3);
+         output_low(tb4);
+         output_low(tb5);
+         output_low(tb6);
+         output_low(tb7);
+         output_low(tb8);delay_ms(2000);
+         }
+         else if(strstr(dataSMS,(unsigned char *)"OFF") != 0)
+         {
+         output_high(tb1);kihkhk
+         output_high(tb2);
+         output_high(tb3);
+         output_high(tb4);
+         output_high(tb5);
+         output_high(tb6);
+         output_high(tb7);
+         output_high(tb8);
+         output_high(tb8);delay_ms(2000);
+         }
+
+
+    
+    
+    xoabodem();//xoa bo dem
+    
+  }
+}
+
+void SIM_INIT()
+{
+  delay_ms(10000);
+  printf("AT\r\n");delay_ms(500);
+  printf("ATE0\r\n");delay_ms(500);
+  printf("AT+CMGF=1\r\n");delay_ms(500);
+  printf("AT+CNMI=2,2,0,0,0\r\n");delay_ms(500); // GUI ND SMS RA 
+  printf("AT&W\r\n");delay_ms(500);
+  printf("AT+CMGDA=\"DEL ALL\"\r\n");delay_ms(500);
+}
+void main()
+{  delay_ms(2000);
+
+
+   output_high(tb1);
+   output_high(tb2);
+   output_high(tb3);
+   output_high(tb4);
+   output_high(tb5);
+   output_high(tb5);
+   output_high(tb7);
+   output_high(tb8);
+   
+   
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+output_low(led);delay_ms(300);
+output_high(led);delay_ms(300);
+
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+
+           printf("AT+CMGS=\"%s\"\r\n",sdt);delay_ms(200);
+           printf("DA KHOI DONG ! ");
+           printf("%c",26);
+           delay_ms(1000);
+
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+
+output_low(led);delay_ms(100);
+output_high(led);delay_ms(100);
+
+
+
+
+
+
+
+   
+   
+   SIM_INIT();
+   
+   ENABLE_INTERRUPTS(INT_RDA); //cho phep ngat uart
+   ENABLE_INTERRUPTS(GLOBAL); //cho phep tat ca cac loai ngat hoat dong   ;
+  
+   xoabodem();//xoa bo dem
+   while(TRUE)
+   {
+      doctinnhan();     
+             
+   }
+
+}
+
